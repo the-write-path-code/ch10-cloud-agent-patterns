@@ -9,6 +9,7 @@ than from hardcoded values in the repository.
 ## Mermaid
 
 ```mermaid
+%%{init: {"theme": "neutral", "themeVariables": {"fontFamily": "Arial, Helvetica, sans-serif", "fontSize": "11px", "actorFontSize": "11px", "noteFontSize": "10px", "messageFontSize": "10px"}}}%%
 flowchart LR
     A[.env file or gcloud deploy flags] --> B[Service A environment]
     A --> C[Service B environment]
