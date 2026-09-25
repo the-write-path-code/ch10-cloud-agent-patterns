@@ -10,6 +10,7 @@ Engine.
 ## Mermaid
 
 ```mermaid
+%%{init: {"theme": "neutral", "themeVariables": {"fontFamily": "Arial, Helvetica, sans-serif", "fontSize": "11px", "actorFontSize": "11px", "noteFontSize": "10px", "messageFontSize": "10px"}}}%%
 flowchart LR
     subgraph Broken[Broken cloud architecture]
         A1[Reader request] --> B1[Cloud Run agent worker A]
