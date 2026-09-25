@@ -11,6 +11,7 @@ than in container memory.
 ## Mermaid
 
 ```mermaid
+%%{init: {"theme": "neutral", "themeVariables": {"fontFamily": "Arial, Helvetica, sans-serif", "fontSize": "11px", "actorFontSize": "11px", "noteFontSize": "10px", "messageFontSize": "10px"}}}%%
 flowchart TD
     A[Service B: policy-agent gets the user question] -->|POST /retrieve| B[Service A: policy-retrieval looks up evidence]
     B -->|Calls rag.retrieval_query| C[Vertex AI RAG Engine stores the searchable knowledge]
