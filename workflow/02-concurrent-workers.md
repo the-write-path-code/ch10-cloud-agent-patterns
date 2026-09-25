@@ -9,6 +9,7 @@ own isolated in-process state.
 ## Mermaid
 
 ```mermaid
+%%{init: {"theme": "neutral", "themeVariables": {"fontFamily": "Arial, Helvetica, sans-serif", "fontSize": "11px", "actorFontSize": "11px", "noteFontSize": "10px", "messageFontSize": "10px"}}}%%
 flowchart LR
     A[Concurrent request A] --> B[Worker 1 in container X]
     C[Concurrent request B] --> D[Worker 2 in container Y]
