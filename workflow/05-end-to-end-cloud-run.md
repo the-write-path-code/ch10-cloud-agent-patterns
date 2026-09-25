@@ -11,6 +11,7 @@ not in whatever one container happened to remember.
 ## Mermaid
 
 ```mermaid
+%%{init: {"theme": "neutral", "themeVariables": {"fontFamily": "Arial, Helvetica, sans-serif", "fontSize": "11px", "actorFontSize": "11px", "noteFontSize": "10px", "messageFontSize": "10px"}}}%%
 flowchart TD
     A[Reader or test client asks a question] -->|POST /query| B[Cloud Run Service B\npolicy-agent answers the user]
     B -->|POST /retrieve| C[Cloud Run Service A\npolicy-retrieval finds evidence]
