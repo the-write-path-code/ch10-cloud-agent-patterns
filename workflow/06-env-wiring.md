@@ -2,26 +2,46 @@
 
 ## Caption
 
-The two services are connected by deployment-time configuration. Resource
-names, service URLs, and model choices come from environment variables rather
-than from hardcoded values in the repository.
+End-to-end request flow on Cloud Run. Environment variables wire Service A and Service B to their respective Cloud Run and Vertex AI RAG endpoints at deployment time, ensuring portable, reproducible infrastructure.
 
 ## Mermaid
 
 ```mermaid
-%%{init: {"theme": "neutral", "themeVariables": {"fontFamily": "Arial, Helvetica, sans-serif", "fontSize": "11px", "actorFontSize": "11px", "noteFontSize": "10px", "messageFontSize": "10px"}}}%%
-flowchart LR
-    A[.env file or gcloud deploy flags] --> B[Service A environment]
-    A --> C[Service B environment]
+%%{init: {"theme": "base", "themeVariables": {"fontFamily": "Arial, Helvetica, sans-serif", "fontSize": "22px", "primaryTextColor": "#000000", "lineColor": "#4B5563"}}}%%
+flowchart TD
+    ENV["<div style='min-width: 640px;'><b>Deployment Configuration Source</b><br/>Environment Variables (<code>.env</code>) or <code>gcloud run deploy</code> Flags</div>"]
 
-    B --> D[RAG_CORPUS]
-    B --> E[GOOGLE_CLOUD_PROJECT]
-    B --> F[GOOGLE_CLOUD_LOCATION]
+    subgraph SVA ["Service A Environment (policy-retrieval)"]
+        direction TB
+        A1["<div style='min-width: 270px;'><b>RAG_CORPUS</b><br/>Vertex AI corpus resource name</div>"]
+        A2["<div style='min-width: 270px;'><b>GOOGLE_CLOUD_PROJECT</b><br/>GCP project identifier</div>"]
+        A3["<div style='min-width: 270px;'><b>GOOGLE_CLOUD_LOCATION</b><br/>GCP deployment region</div>"]
+        A1 --- A2 --- A3
+    end
 
-    C --> G[RETRIEVAL_SERVICE_URL]
-    C --> H[AGENT_MODEL]
-    C --> I[GOOGLE_CLOUD_PROJECT]
-    C --> J[GOOGLE_CLOUD_LOCATION]
+    subgraph SVB ["Service B Environment (policy-agent)"]
+        direction TB
+        B1["<div style='min-width: 270px;'><b>RETRIEVAL_SERVICE_URL</b><br/>Service A Cloud Run endpoint</div>"]
+        B2["<div style='min-width: 270px;'><b>AGENT_MODEL</b><br/>Gemini model identifier</div>"]
+        B3["<div style='min-width: 270px;'><b>GOOGLE_CLOUD_PROJECT</b><br/>GCP project identifier</div>"]
+        B4["<div style='min-width: 270px;'><b>GOOGLE_CLOUD_LOCATION</b><br/>GCP deployment region</div>"]
+        B1 --- B2 --- B3 --- B4
+    end
+
+    ENV ==> SVA
+    ENV ==> SVB
+
+    classDef env fill:#F3F4F6,stroke:#4B5563,stroke-width:1.5px,color:#000000
+    classDef sva fill:#EDE9FE,stroke:#7C3AED,stroke-width:1.5px,color:#000000
+    classDef svb fill:#EFF6FF,stroke:#2563EB,stroke-width:1.5px,color:#000000
+    classDef subg_a fill:#FFFFFF,stroke:#7C3AED,stroke-width:1.5px,color:#000000
+    classDef subg_b fill:#FFFFFF,stroke:#2563EB,stroke-width:1.5px,color:#000000
+
+    class ENV env
+    class SVA subg_a
+    class SVB subg_b
+    class A1,A2,A3 sva
+    class B1,B2,B3,B4 svb
 ```
 
 ## What the reader should notice

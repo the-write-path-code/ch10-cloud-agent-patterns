@@ -2,20 +2,28 @@
 
 ## Caption
 
-Concurrent traffic makes the state problem easier to see. Two requests can be
-handled at the same time by separate workers, and each worker begins with its
-own isolated in-process state.
+Concurrent Workers Do Not Share Memory. Concurrent requests multiply isolated worker memories rather than creating a shared stateful system.
 
 ## Mermaid
 
 ```mermaid
-%%{init: {"theme": "neutral", "themeVariables": {"fontFamily": "Arial, Helvetica, sans-serif", "fontSize": "11px", "actorFontSize": "11px", "noteFontSize": "10px", "messageFontSize": "10px"}}}%%
-flowchart LR
-    A[Concurrent request A] --> B[Worker 1 in container X]
-    C[Concurrent request B] --> D[Worker 2 in container Y]
-    B --> E[Local cache inside X]
-    D --> F[Local cache inside Y]
-    E -.no shared memory boundary.-> F
+%%{init: {"theme": "base", "themeVariables": {"fontFamily": "Arial, Helvetica, sans-serif", "fontSize": "22px", "primaryTextColor": "#000000", "lineColor": "#4B5563"}}}%%
+flowchart TD
+    A["<div style='min-width: 320px;'><b>Concurrent Request A</b><br/>First client query arrives</div>"] --> B["<div style='min-width: 320px;'><b>Worker 1 in Container X</b><br/>Isolated OS process executes agent</div>"]
+    B --> E["<div style='min-width: 320px;'><b>Local Cache Inside X</b><br/>Private heap stores retrieval state</div>"]
+
+    C["<div style='min-width: 320px;'><b>Concurrent Request B</b><br/>Parallel client query arrives</div>"] --> D["<div style='min-width: 320px;'><b>Worker 2 in Container Y</b><br/>Isolated OS process executes agent</div>"]
+    D --> F["<div style='min-width: 320px;'><b>Local Cache Inside Y</b><br/>Private heap has no access to X</div>"]
+
+    E <-.->|"<b>No Shared Memory Boundary</b><br/>Concurrent workers cannot access peer heaps"| F
+
+    classDef req fill:#F3F4F6,stroke:#4B5563,color:#000000,stroke-width:1.5px
+    classDef worker fill:#EDE9FE,stroke:#7C3AED,color:#000000,stroke-width:1.5px
+    classDef cache fill:#FEF9C3,stroke:#CA8A04,color:#000000,stroke-width:1.5px
+
+    class A,C req
+    class B,D worker
+    class E,F cache
 ```
 
 ## What the reader should notice
