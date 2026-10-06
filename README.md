@@ -6,6 +6,8 @@ This repository shows why an agent can appear correct on a laptop and fail after
 
 The fixed architecture moves retrieval out of the agent process. A stateless agent service asks a dedicated FastAPI retrieval service for evidence, and that service reads from a shared Vertex AI RAG corpus. The system no longer depends on what one container happened to remember.
 
+For interactive visual walkthroughs of process-local memory loss, concurrent worker isolation, the stateless agent fix, FastAPI retrieval boundaries, deploy-time environment wiring, and architectural comparisons, see the [interactive architecture and workflow diagrams](#architecture-and-workflow-diagrams).
+
 ## What You Will Run
 
 | Chapter section | Demonstration | What it shows |
@@ -260,29 +262,38 @@ Run the test suite before changing service contracts, environment-variable names
 │   ├── validate_rag.py
 │   └── validate_services.py
 ├── workflow/
-│   ├── 01_local_failure.md
-│   ├── 02_concurrent_workers.md
-│   ├── 03_stateless_fix.md
-│   ├── 04_retrieval_service.md
-│   ├── 05_end_to_end_cloud_run.md
-│   ├── 06_env_wiring.md
-│   └── 07_broken_vs_fixed.md
+│   ├── 01_local_failure.html          # Interactive local success vs cloud failure workflow
+│   ├── 01-local-failure.md            # Local cache failure mode analysis
+│   ├── 02_concurrent_workers.html      # Interactive concurrent worker memory isolation workflow
+│   ├── 02-concurrent-workers.md        # Worker process heap isolation reference
+│   ├── 03_stateless_fix.html           # Interactive stateless agent externalized retrieval workflow
+│   ├── 03-stateless-fix.md             # Stateless agent architectural fix
+│   ├── 04_retrieval_service.html       # Interactive FastAPI retrieval service boundary workflow
+│   ├── 04-retrieval-service.md         # FastAPI policy-retrieval boundary specifications
+│   ├── 05_end_to_end_cloud_run.html    # Interactive end-to-end resilient cloud agent workflow
+│   ├── 05-end-to-end-cloud-run.md      # End-to-end request path and design principles
+│   ├── 06_env_wiring.html              # Interactive deployment environment configuration workflow
+│   ├── 06-env-wiring.md                # Deployment-time environment variable wiring
+│   ├── 07_broken_vs_fixed.html         # Interactive broken vs fixed architecture comparison workflow
+│   ├── 07-broken-vs-fixed.md           # Side-by-side architecture comparison notes
+│   ├── 08-figure10-6.md                # Figure 10.6 manuscript reference
+│   └── all-diagrams.md                 # Complete Mermaid diagram reference collection
 └── tests/
 ```
 
-## Architecture Diagrams and Supporting Documents
+## Architecture and Workflow Diagrams
 
-The `workflow/` directory contains the Chapter 10 diagrams:
+Interactive Archify workflow diagrams illustrate process-local cache failure modes, multi-worker isolation, the stateless architecture fix, dedicated retrieval microservice boundaries, deploy-time environment variable injection, and side-by-side comparative patterns. The companion markdown references and manuscript figures are available in `workflow/`.
 
-- A local cache succeeding in one process and failing across Cloud Run instances.
-- Concurrent worker memory isolation.
-- The stateless-agent fix.
-- The FastAPI retrieval boundary.
-- The end-to-end Cloud Run request path.
-- Deployment-time environment wiring.
-- A side-by-side broken-versus-fixed architecture comparison.
+- [01: Local Success, Cloud Failure](https://the-write-path-code.github.io/ch10-cloud-agent-patterns/workflow/01_local_failure.html) — Visualizes how module-level in-process heap caches succeed on a developer laptop but fail with a 100% cache miss rate once autoscaled across separate Cloud Run containers.
+- [02: Concurrent Worker Memory Isolation](https://the-write-path-code.github.io/ch10-cloud-agent-patterns/workflow/02_concurrent_workers.html) — Demonstrates that concurrent requests multiply isolated operating system worker processes with private address spaces rather than sharing state.
+- [03: The Stateless Agent Fix](https://the-write-path-code.github.io/ch10-cloud-agent-patterns/workflow/03_stateless_fix.html) — Illustrates the architectural pattern where agent workers hold zero in-memory cache and delegate retrieval over HTTP to a centralized FastAPI service backed by Vertex AI RAG.
+- [04: FastAPI as the Retrieval Boundary](https://the-write-path-code.github.io/ch10-cloud-agent-patterns/workflow/04_retrieval_service.html) — Details the service-to-service contract between Service B (policy-agent) and Service A (policy-retrieval) with structured JSON context validation.
+- [05: End-to-End Resilient Cloud Flow](https://the-write-path-code.github.io/ch10-cloud-agent-patterns/workflow/05_end_to_end_cloud_run.html) — Traces the full lifecycle of a user query through Service B and Service A to Vertex AI RAG, delivering grounded policy answers.
+- [06: Deployment Environment Configuration](https://the-write-path-code.github.io/ch10-cloud-agent-patterns/workflow/06_env_wiring.html) — Maps deploy-time environment variable wiring (.env and gcloud deploy flags) ensuring reproducible, portable multi-service Cloud Run infrastructure.
+- [07: Broken vs. Fixed Architecture Comparison](https://the-write-path-code.github.io/ch10-cloud-agent-patterns/workflow/07_broken_vs_fixed.html) — Side-by-side comparative walkthrough contrasting stateful in-process memory anti-patterns against shared managed service boundaries.
 
-Start with `01_local_failure.md`, then read `03_stateless_fix.md`. The rest of the chapter follows from that contrast: memory in a container is not shared system state.
+Start with `01_local_failure.html` (and companion `01-local-failure.md`), then explore `03_stateless_fix.html`. The rest of the chapter follows from that contrast: memory in a container is not shared system state.
 
 ## Safety and Operational Limits
 
